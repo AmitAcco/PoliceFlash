@@ -1,26 +1,40 @@
 const splashScreen = document.getElementById('splashScreen');
 const flashlight = document.getElementById('flashlight');
 const toggleButton = document.getElementById('toggleButton');
-const closeButton = document.getElementById('closeButton');
 const line1 = document.querySelector('.line1');
 let isFlashing = false;
 let flashInterval;
+
+const upperHalf = document.createElement('div');
+const lowerHalf = document.createElement('div');
+const divider = document.createElement('div');
+
+upperHalf.id = 'upperHalf';
+lowerHalf.id = 'lowerHalf';
+divider.id = 'divider';
+
+flashlight.appendChild(upperHalf);
+flashlight.appendChild(divider);
+flashlight.appendChild(lowerHalf);
 
 // Function to start flashing
 function flashScreen() {
     flashlight.style.display = 'block';
     toggleButton.style.display = 'block';
-    flashlight.style.backgroundColor = 'blue';
     line1.classList.add('flash'); // Add flash class to start text color animation
+
     flashInterval = setInterval(() => {
-        flashlight.style.backgroundColor = flashlight.style.backgroundColor === 'blue' ? 'red' : 'blue';
-    }, 450);
+        // Flash upper half red and lower half blue, alternating with black
+        upperHalf.style.backgroundColor = upperHalf.style.backgroundColor === 'red' ? 'black' : 'red';
+        lowerHalf.style.backgroundColor = lowerHalf.style.backgroundColor === 'blue' ? 'black' : 'blue';
+    }, 1050);
 }
 
 // Function to stop flashing
 function stopFlashScreen() {
     clearInterval(flashInterval);
-    flashlight.style.display = 'none';
+    upperHalf.style.backgroundColor = 'black';
+    lowerHalf.style.backgroundColor = 'black';
     line1.classList.remove('flash'); // Remove flash class to stop text color animation
 }
 
@@ -36,30 +50,10 @@ toggleButton.addEventListener('click', () => {
     isFlashing = !isFlashing;
 });
 
-// Event listener for the close button
-closeButton.addEventListener('click', () => {
-    if (window.Android) {
-        window.Android.closeWebView(); // Call Android method to close WebView
-    } else {
-        window.close(); // Attempt to close the window
-    }
-});
-
 // Function to handle splash screen touch
 function handleSplashScreenTouch() {
     splashScreen.style.display = 'none';
     toggleButton.style.display = 'block';
-    closeButton.style.display = 'block';
-}
-
-// Add touch event listener to splash screen
-splashScreen.addEventListener('click', handleSplashScreenTouch);
-splashScreen.addEventListener('touchstart', handleSplashScreenTouch);
-function handleSplashScreenTouch(event) {
-    console.log("Splash screen touched or clicked"); // Debugging statement
-    splashScreen.style.display = 'none';
-    toggleButton.style.display = 'block';
-    closeButton.style.display = 'block';
 }
 
 // Add touch event listener to splash screen
