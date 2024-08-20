@@ -70,10 +70,28 @@
             display: none;
         }
 
+        #upperHalf, #lowerHalf {
+            width: 100%;
+            height: 50%;
+            position: relative;
+        }
+
+        /* Divider line styling */
+        #divider {
+            width: 100%;
+            height: 20px;
+            background-color: white;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+
         /* Controls styling */
         #controls {
             position: absolute;
-            bottom: 100px; /* Move buttons 100px up from the bottom */
+            bottom: 100px; /* Move button 100px up from the bottom */
             left: 50%;
             transform: translateX(-50%);
             z-index: 2;
@@ -112,17 +130,20 @@
             <span class="line2">By Amit Acco</span>
         </p>
     </div>
-    <div id="flashlight"></div>
+    <div id="flashlight">
+        <div id="upperHalf"></div>
+        <div id="divider"></div>
+        <div id="lowerHalf"></div>
+    </div>
     <div id="controls">
         <button id="toggleButton" style="display:none;">On</button>
-        <button id="closeButton" style="display:none;">Close</button>
     </div>
     <script>
         const splashScreen = document.getElementById('splashScreen');
         const flashlight = document.getElementById('flashlight');
         const toggleButton = document.getElementById('toggleButton');
-        const closeButton = document.getElementById('closeButton');
-        const line1 = document.querySelector('.line1');
+        const upperHalf = document.getElementById('upperHalf');
+        const lowerHalf = document.getElementById('lowerHalf');
         let isFlashing = false;
         let flashInterval;
 
@@ -130,18 +151,23 @@
         function flashScreen() {
             flashlight.style.display = 'block';
             toggleButton.style.display = 'block';
-            flashlight.style.backgroundColor = 'blue';
-            line1.classList.add('flash'); // Add flash class to start text color animation
             flashInterval = setInterval(() => {
-                flashlight.style.backgroundColor = flashlight.style.backgroundColor === 'blue' ? 'red' : 'blue';
-            }, 450);
+                upperHalf.style.backgroundColor = 'red';
+                lowerHalf.style.backgroundColor = 'blue';
+
+                setTimeout(() => {
+                    upperHalf.style.backgroundColor = 'black';
+                    lowerHalf.style.backgroundColor = 'black';
+                }, 1000);
+            }, 1050);
         }
 
         // Function to stop flashing
         function stopFlashScreen() {
             clearInterval(flashInterval);
+            upperHalf.style.backgroundColor = 'black';
+            lowerHalf.style.backgroundColor = 'black';
             flashlight.style.display = 'none';
-            line1.classList.remove('flash'); // Remove flash class to stop text color animation
         }
 
         // Event listener for the toggle button
@@ -156,21 +182,10 @@
             isFlashing = !isFlashing;
         });
 
-        // Event listener for the close button
-        closeButton.addEventListener('click', () => {
-            if (window.Android && typeof window.Android.closeWebView === 'function') {
-                window.Android.closeWebView(); // Call Android method to close WebView
-            } else {
-                console.log("Android interface is not available or method not defined.");
-                // Optionally, you can use navigator.app.exitApp() if running in a Cordova/PhoneGap app
-            }
-        });
-
         // Function to handle splash screen touch
         function handleSplashScreenTouch() {
             splashScreen.style.display = 'none';
             toggleButton.style.display = 'block';
-            closeButton.style.display = 'block';
         }
 
         // Add touch event listener to splash screen
