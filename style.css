@@ -25,9 +25,10 @@ body, html {
     z-index: 10; /* Ensure splash screen is on top */
     pointer-events: auto; /* Ensure it can receive pointer events */
 }
+
 #policeLogo {
-    width: 150px;
-    height: auto;
+    width: 30%;
+    height: auto; /* Maintain aspect ratio */
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -58,6 +59,24 @@ body, html {
     left: 0;
     z-index: 1;
     display: none;
+}
+
+#upperHalf, #lowerHalf {
+    width: 100%;
+    height: 50%;
+    position: relative;
+}
+
+/* Divider line styling */
+#divider {
+    width: 100%;
+    height: 20px;
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 2;
 }
 
 /* Controls styling */
@@ -92,8 +111,3 @@ button:focus {
 button.active {
     background-color: #555;
 }
-#policeLogo {
-    width: 30%;
-    height: auto; /* Maintain aspect ratio */
-}
-
