@@ -3,51 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Combined HTML, CSS, and JavaScript</title>
+    <title>Police Mobile Flashlight</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap" rel="stylesheet">
     <style>
-        /* CSS styles go here */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        body, html {
             margin: 0;
             padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: black;
+            position: relative;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Splash screen styling */
+        #splashScreen {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-bottom: 20px;
+            z-index: 10;
+            pointer-events: auto;
+        }
+
+        #policeLogo {
+            width: 30%;
+            max-width: 150px;
+            height: auto;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        #splashText {
+            font-size: 24px;
+            color: black;
             text-align: center;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+        /* Flashing text animation */
+        @keyframes flashText {
+            0% { color: blue; }
+            50% { color: red; }
+            100% { color: blue; }
         }
-        h1 {
-            color: #333;
+
+        .flash {
+            animation: flashText 450ms infinite;
         }
+
+        /* Flashlight styling */
+        #flashlight {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: none;
+        }
+
+        /* Controls styling */
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            gap: 10px;
+        }
+
         button {
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #007bff;
+            width: 120px;
+            height: 50px;
+            font-size: 20px;
+            font-weight: 900;
+            font-family: 'Roboto', sans-serif;
             border: none;
+            background-color: #333;
+            color: white;
             border-radius: 5px;
             cursor: pointer;
+            text-align: center;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        button:focus {
+            outline: none;
+        }
+
+        button.active {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Hello, World!</h1>
-        <button id="myButton">Click me</button>
-        <p id="message"></p>
+    <div id="splashScreen">
+        <img id="policeLogo" src="https://upload.wikimedia.org/wikipedia/commons/2/27/Emblem_of_Israel_Police_Blue.svg" alt="Israel Police Emblem">
+        <p id="splashText">
+            <span class="line1">Police Mobile Flicker V.1</span><br>
+            <span class="line2">By Amit Acco</span>
+        </p>
+    </div>
+    <div id="flashlight"></div>
+    <div id="controls">
+        <button id="toggleButton" style="display:none;">On</button>
+        <button id="closeButton" style="display:none;">Close</button>
     </div>
     <script>
-        // JavaScript code goes here
-        document.getElementById('myButton').addEventListener('click', function() {
-            document.getElementById('message').textContent = 'Button was clicked!';
+        const splashScreen = document.getElementById('splashScreen');
+        const flashlight = document.getElementById('flashlight');
+        const toggleButton = document.getElementById('toggleButton');
+        const closeButton = document.getElementById('closeButton');
+        const line1 = document.querySelector('.line1');
+        let isFlashing = false;
+        let flashInterval;
+
+        // Function to start flashing
+        function flashScreen() {
+            flashlight.style.display = 'block';
+            toggleButton.style.display = 'block';
+            flashlight.style.backgroundColor = 'blue';
+            line1.classList.add('flash');
+            flashInterval = setInterval(() => {
+                flashlight.style.backgroundColor = flashlight.style.backgroundColor === 'blue' ? 'red' : 'blue';
+            }, 450);
+        }
+
+        // Function to stop flashing
+        function stopFlashScreen() {
+            clearInterval(flashInterval);
+            flashlight.style.display = 'none';
+            line1.classList.remove('flash');
+        }
+
+        // Event listener for the toggle button
+        toggleButton.addEventListener('click', () => {
+            if (isFlashing) {
+                stopFlashScreen();
+                toggleButton.textContent = 'On';
+            } else {
+                flashScreen();
+                toggleButton.textContent = 'Off';
+            }
+            isFlashing = !isFlashing;
         });
+
+        // Event listener for the close button
+        closeButton.addEventListener('click', () => {
+            if (window.Android && typeof window.Android.closeWebView === 'function') {
+                window.Android.closeWebView(); // Call Android method to close WebView
+            } else {
+                window.close(); // Attempt to close the window
+            }
+        });
+
+        // Function to handle splash screen touch
+        function handleSplashScreenTouch() {
+            splashScreen.style.display = 'none';
+            toggleButton.style.display = 'block';
+            closeButton.style.display = 'block';
+        }
+
+        // Add touch event listener to splash screen
+        splashScreen.addEventListener('click', handleSplashScreenTouch);
+        splashScreen.addEventListener('touchstart', handleSplashScreenTouch);
     </script>
 </body>
 </html>
