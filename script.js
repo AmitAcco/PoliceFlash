@@ -1,69 +1,47 @@
-const splashScreen = document.getElementById('splashScreen');
-const flashlight = document.getElementById('flashlight');
-const toggleButton = document.getElementById('toggleButton');
-const line1 = document.querySelector('.line1');
-const upperHalf = document.getElementById('upperHalf');
-const lowerHalf = document.getElementById('lowerHalf');
-let isFlashing = false;
-let flashInterval;
+document.addEventListener('DOMContentLoaded', function () {
+    const splashScreen = document.getElementById('splash-screen');
+    const mainScreen = document.getElementById('main-screen');
+    const upperScreen = document.getElementById('upper-screen');
+    const lowerScreen = document.getElementById('lower-screen');
+    const toggleBtn = document.getElementById('toggle-btn');
+    const backPopup = document.getElementById('back-popup');
 
-// Function to start flashing
-function flashScreen() {
-    flashlight.style.display = 'block';
-    toggleButton.style.display = 'block';
-    line1.classList.add('flash'); // Add flash class to start text color animation
-    flashInterval = setInterval(() => {
-        upperHalf.style.backgroundColor = upperHalf.style.backgroundColor === 'red' ? 'black' : 'red';
-        lowerHalf.style.backgroundColor = lowerHalf.style.backgroundColor === 'blue' ? 'black' : 'blue';
-    }, 1300); // 1000ms on, 300ms off
-}
+    let isOn = false;
+    let backPressedOnce = false;
 
-// Function to stop flashing
-function stopFlashScreen() {
-    clearInterval(flashInterval);
-    flashlight.style.display = 'none';
-    line1.classList.remove('flash'); // Remove flash class to stop text color animation
-}
+    // Move to the main screen on touch
+    splashScreen.addEventListener('click', function () {
+        splashScreen.classList.add('hidden');
+        mainScreen.classList.remove('hidden');
+    });
 
-// Event listener for the toggle button
-toggleButton.addEventListener('click', () => {
-    if (isFlashing) {
-        stopFlashScreen();
-        toggleButton.textContent = 'On';
-    } else {
-        flashScreen();
-        toggleButton.textContent = 'Off';
-    }
-    isFlashing = !isFlashing;
-});
-
-// Function to handle splash screen touch
-function handleSplashScreenTouch() {
-    splashScreen.style.display = 'none';
-    toggleButton.style.display = 'block';
-}
-
-// Add touch event listener to splash screen
-splashScreen.addEventListener('click', handleSplashScreenTouch);
-splashScreen.addEventListener('touchstart', handleSplashScreenTouch);
-
-// Handle back button press
-let backPressCount = 0;
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Backspace') {
-        backPressCount++;
-        if (backPressCount === 2) {
-            if (window.Android && typeof window.Android.closeWebView === 'function') {
-                window.Android.closeWebView(); // Call Android method to close WebView
-            } else {
-                console.log("Application closing...");
-                // Optionally, you can use navigator.app.exitApp() if running in a Cordova/PhoneGap app
-            }
+    // Toggle On/Off button
+    toggleBtn.addEventListener('click', function () {
+        if (isOn) {
+            toggleBtn.textContent = 'On';
+            upperScreen.style.backgroundColor = 'black';
+            lowerScreen.style.backgroundColor = 'black';
         } else {
-            setTimeout(() => {
-                backPressCount = 0; // Reset count after a short delay
-            }, 2000);
-            alert("Press back again to close application");
+            toggleBtn.textContent = 'Off';
+            upperScreen.style.backgroundColor = 'blue';
+            lowerScreen.style.backgroundColor = 'red';
         }
-    }
+        isOn = !isOn;
+    });
+
+    // Handle back button press
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Backspace' || event.key === 'Escape') {
+            if (backPressedOnce) {
+                window.close(); // Close app logic; this may differ based on the environment
+            } else {
+                backPressedOnce = true;
+                backPopup.classList.remove('hidden');
+                setTimeout(() => {
+                    backPressedOnce = false;
+                    backPopup.classList.add('hidden');
+                }, 2000);
+            }
+        }
+    });
 });
