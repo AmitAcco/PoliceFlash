@@ -115,13 +115,11 @@
     <div id="flashlight"></div>
     <div id="controls">
         <button id="toggleButton" style="display:none;">On</button>
-        <button id="closeButton" style="display:none;">Close</button>
     </div>
     <script>
         const splashScreen = document.getElementById('splashScreen');
         const flashlight = document.getElementById('flashlight');
         const toggleButton = document.getElementById('toggleButton');
-        const closeButton = document.getElementById('closeButton');
         const line1 = document.querySelector('.line1');
         let isFlashing = false;
         let flashInterval;
@@ -156,20 +154,10 @@
             isFlashing = !isFlashing;
         });
 
-        // Event listener for the close button
-        closeButton.addEventListener('click', () => {
-            if (window.Android && typeof window.Android.closeWebView === 'function') {
-                window.Android.closeWebView(); // Call Android method to close WebView
-            } else {
-                window.close(); // Attempt to close the window
-            }
-        });
-
         // Function to handle splash screen touch
         function handleSplashScreenTouch() {
             splashScreen.style.display = 'none';
             toggleButton.style.display = 'block';
-            closeButton.style.display = 'block';
         }
 
         // Add touch event listener to splash screen
