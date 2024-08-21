@@ -3,26 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Police Mobile Flashlight</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap" rel="stylesheet">
+    <title>Combined HTML, CSS, and JavaScript</title>
+    <style>
+        /* CSS styles go here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <div id="splashScreen">
-       <img id="policeLogo" src="https://upload.wikimedia.org/wikipedia/commons/2/27/Emblem_of_Israel_Police_Blue.svg" alt="Israel Police Emblem">
-        <p id="splashText">
-            <span class="line1">Police Mobile Flicker V.1</span><br>
-            <span class="line2">By Amit Acco</span>
-        </p>
+    <div class="container">
+        <h1>Hello, World!</h1>
+        <button id="myButton">Click me</button>
+        <p id="message"></p>
     </div>
-    <div id="flashlight">
-        <div id="upperHalf"></div>
-        <div id="divider"></div>
-        <div id="lowerHalf"></div>
-    </div>
-    <div id="controls">
-        <button id="toggleButton" style="display:none;">On</button>
-    </div>
-    <script src="script.js"></script>
+    <script>
+        // JavaScript code goes here
+        document.getElementById('myButton').addEventListener('click', function() {
+            document.getElementById('message').textContent = 'Button was clicked!';
+        });
+    </script>
 </body>
 </html>
