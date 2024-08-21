@@ -17,81 +17,192 @@
             font-family: 'Roboto', sans-serif;
         }
 
-        /* Split screen styling */
-        #upperHalf, #lowerHalf {
-            position: fixed;
+        /* Splash screen styling */
+        #splashScreen {
             width: 100%;
-            height: 50%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
             left: 0;
-            z-index: 1;
+            padding-bottom: 20px;
+            z-index: 10;
             pointer-events: auto;
         }
 
-        #upperHalf {
-            top: 0;
-            background-color: transparent;
+        #policeLogo {
+            width: 30%;
+            max-width: 150px;
+            height: auto;
+            margin-top: auto;
+            margin-bottom: auto;
         }
 
-        #lowerHalf {
-            bottom: 0;
-            background-color: transparent;
+        #splashText {
+            font-size: 24px;
+            color: black;
+            text-align: center;
         }
 
-        /* Flashing effect */
+        /* Flashing text animation */
+        @keyframes flashText {
+            0% { color: blue; }
+            50% { color: red; }
+            100% { color: blue; }
+        }
+
         .flash {
-            position: absolute;
+            animation: flashText 450ms infinite;
+        }
+
+        /* Flashlight styling */
+        #flashlight {
             width: 100%;
             height: 100%;
-            background-color: black;
-            z-index: 2;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
             display: none;
         }
 
-        .flash.red {
-            background-color: red;
+        /* Controls styling */
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            gap: 10px;
         }
 
-        .flash.blue {
-            background-color: blue;
+        button {
+            width: 120px;
+            height: 50px;
+            font-size: 20px;
+            font-weight: 900;
+            font-family: 'Roboto', sans-serif;
+            border: none;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button.active {
+            background-color: #555;
+        }
+
+        /* Popup styling */
+        #popup {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 18px;
+            display: none;
+            z-index: 3;
         }
     </style>
 </head>
 <body>
-    <div id="upperHalf"></div>
-    <div id="lowerHalf"></div>
-    <div id="flashUpper" class="flash red"></div>
-    <div id="flashLower" class="flash blue"></div>
-
+    <div id="splashScreen">
+        <img id="policeLogo" src="https://upload.wikimedia.org/wikipedia/commons/2/27/Emblem_of_Israel_Police_Blue.svg" alt="Israel Police Emblem">
+        <p id="splashText">
+            <span class="line1">Police Mobile Flicker V.1</span><br>
+            <span class="line2">By Amit Acco</span>
+        </p>
+    </div>
+    <div id="flashlight"></div>
+    <div id="controls">
+        <button id="toggleButton" style="display:none;">On</button>
+    </div>
+    <div id="popup">Click back twice to close app</div>
     <script>
-        const upperHalf = document.getElementById('upperHalf');
-        const lowerHalf = document.getElementById('lowerHalf');
-        const flashUpper = document.getElementById('flashUpper');
-        const flashLower = document.getElementById('flashLower');
+        const splashScreen = document.getElementById('splashScreen');
+        const flashlight = document.getElementById('flashlight');
+        const toggleButton = document.getElementById('toggleButton');
+        const popup = document.getElementById('popup');
+        const line1 = document.querySelector('.line1');
+        let isFlashing = false;
+        let flashInterval;
+        let backPressedOnce = false;
 
-        function flashElement(element, color, duration) {
-            element.style.display = 'block';
-            element.style.backgroundColor = color;
-            setTimeout(() => {
-                element.style.display = 'none';
-            }, duration);
+        // Function to start flashing
+        function flashScreen() {
+            flashlight.style.display = 'block';
+            toggleButton.style.display = 'block';
+            flashlight.style.backgroundColor = 'blue';
+            line1.classList.add('flash');
+            flashInterval = setInterval(() => {
+                flashlight.style.backgroundColor = flashlight.style.backgroundColor === 'blue' ? 'red' : 'blue';
+            }, 450);
         }
 
-        function handleUpperHalfClick() {
-            flashElement(flashUpper, 'red', 1000);
-            setTimeout(() => {
-                flashElement(flashUpper, 'black', 200);
-            }, 1000);
+        // Function to stop flashing
+        function stopFlashScreen() {
+            clearInterval(flashInterval);
+            flashlight.style.display = 'none';
+            line1.classList.remove('flash');
         }
 
-        function handleLowerHalfClick() {
-            flashElement(flashLower, 'blue', 1000);
-            setTimeout(() => {
-                flashElement(flashLower, 'black', 200);
-            }, 1000);
+        // Event listener for the toggle button
+        toggleButton.addEventListener('click', () => {
+            if (isFlashing) {
+                stopFlashScreen();
+                toggleButton.textContent = 'On';
+            } else {
+                flashScreen();
+                toggleButton.textContent = 'Off';
+            }
+            isFlashing = !isFlashing;
+        });
+
+        // Function to handle splash screen touch
+        function handleSplashScreenTouch() {
+            splashScreen.style.display = 'none';
+            toggleButton.style.display = 'block';
         }
 
-        upperHalf.addEventListener('click', handleUpperHalfClick);
-        lowerHalf.addEventListener('click', handleLowerHalfClick);
+        // Add touch event listener to splash screen
+        splashScreen.addEventListener('click', handleSplashScreenTouch);
+        splashScreen.addEventListener('touchstart', handleSplashScreenTouch);
+
+        // Function to show popup
+        function showPopup() {
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 2000);
+        }
+
+        // Handle back button press on Android
+        document.addEventListener('backbutton', function(e) {
+            e.preventDefault();
+            if (backPressedOnce) {
+                navigator.app.exitApp(); // Close the app
+            } else {
+                backPressedOnce = true;
+                showPopup();
+                setTimeout(() => {
+                    backPressedOnce = false;
+                }, 2000);
+            }
+        }, false);
     </script>
 </body>
 </html>
