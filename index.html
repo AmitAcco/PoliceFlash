@@ -3,22 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Police Flicker</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Pac-Man Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="splash-screen">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Emblem_of_Israel_Police_Blue.svg" alt="Police Emblem">
-        <h1>Police Flicker</h1>
-        <h2>By Amit Acco</h2>
-    </div>
-    <div id="main-screen" class="hidden">
-        <div id="upper-screen"></div>
-        <div id="lower-screen"></div>
-        <button id="toggle-btn">On</button>
-    </div>
-    <div id="back-popup" class="hidden">
-        Press twice to close app
+    <div id="game-container">
+        <div id="pacman"></div>
+        <div class="food" style="top: 50px; left: 100px;"></div>
+        <div class="food" style="top: 150px; left: 200px;"></div>
+        <!-- Add more food items as needed -->
     </div>
     <script src="script.js"></script>
 </body>
