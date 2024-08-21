@@ -1,8 +1,9 @@
 const splashScreen = document.getElementById('splashScreen');
 const flashlight = document.getElementById('flashlight');
 const toggleButton = document.getElementById('toggleButton');
-const closeButton = document.getElementById('closeButton');
 const line1 = document.querySelector('.line1');
+const upperHalf = document.getElementById('upperHalf');
+const lowerHalf = document.getElementById('lowerHalf');
 let isFlashing = false;
 let flashInterval;
 
@@ -10,11 +11,11 @@ let flashInterval;
 function flashScreen() {
     flashlight.style.display = 'block';
     toggleButton.style.display = 'block';
-    flashlight.style.backgroundColor = 'blue';
     line1.classList.add('flash'); // Add flash class to start text color animation
     flashInterval = setInterval(() => {
-        flashlight.style.backgroundColor = flashlight.style.backgroundColor === 'blue' ? 'red' : 'blue';
-    }, 450);
+        upperHalf.style.backgroundColor = upperHalf.style.backgroundColor === 'red' ? 'black' : 'red';
+        lowerHalf.style.backgroundColor = lowerHalf.style.backgroundColor === 'blue' ? 'black' : 'blue';
+    }, 1300); // 1000ms on, 300ms off
 }
 
 // Function to stop flashing
@@ -36,32 +37,33 @@ toggleButton.addEventListener('click', () => {
     isFlashing = !isFlashing;
 });
 
-// Event listener for the close button
-closeButton.addEventListener('click', () => {
-    if (window.Android) {
-        window.Android.closeWebView(); // Call Android method to close WebView
-    } else {
-        window.close(); // Attempt to close the window
-    }
-});
-
 // Function to handle splash screen touch
 function handleSplashScreenTouch() {
     splashScreen.style.display = 'none';
     toggleButton.style.display = 'block';
-    closeButton.style.display = 'block';
 }
 
 // Add touch event listener to splash screen
 splashScreen.addEventListener('click', handleSplashScreenTouch);
 splashScreen.addEventListener('touchstart', handleSplashScreenTouch);
-function handleSplashScreenTouch(event) {
-    console.log("Splash screen touched or clicked"); // Debugging statement
-    splashScreen.style.display = 'none';
-    toggleButton.style.display = 'block';
-    closeButton.style.display = 'block';
-}
 
-// Add touch event listener to splash screen
-splashScreen.addEventListener('click', handleSplashScreenTouch);
-splashScreen.addEventListener('touchstart', handleSplashScreenTouch);
+// Handle back button press
+let backPressCount = 0;
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Backspace') {
+        backPressCount++;
+        if (backPressCount === 2) {
+            if (window.Android && typeof window.Android.closeWebView === 'function') {
+                window.Android.closeWebView(); // Call Android method to close WebView
+            } else {
+                console.log("Application closing...");
+                // Optionally, you can use navigator.app.exitApp() if running in a Cordova/PhoneGap app
+            }
+        } else {
+            setTimeout(() => {
+                backPressCount = 0; // Reset count after a short delay
+            }, 2000);
+            alert("Press back again to close application");
+        }
+    }
+});
