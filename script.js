@@ -1,47 +1,53 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const splashScreen = document.getElementById('splash-screen');
-    const mainScreen = document.getElementById('main-screen');
-    const upperScreen = document.getElementById('upper-screen');
-    const lowerScreen = document.getElementById('lower-screen');
-    const toggleBtn = document.getElementById('toggle-btn');
-    const backPopup = document.getElementById('back-popup');
+document.addEventListener('DOMContentLoaded', () => {
+    const pacman = document.getElementById('pacman');
+    const container = document.getElementById('game-container');
+    let pacmanX = 0;
+    let pacmanY = 0;
+    const pacmanSpeed = 5;
 
-    let isOn = false;
-    let backPressedOnce = false;
+    function movePacman(x, y) {
+        pacmanX += x;
+        pacmanY += y;
+        pacman.style.left = `${pacmanX}px`;
+        pacman.style.top = `${pacmanY}px`;
 
-    // Move to the main screen on touch
-    splashScreen.addEventListener('click', function () {
-        splashScreen.classList.add('hidden');
-        mainScreen.classList.remove('hidden');
-    });
+        // Check collision with food
+        checkCollision();
+    }
 
-    // Toggle On/Off button
-    toggleBtn.addEventListener('click', function () {
-        if (isOn) {
-            toggleBtn.textContent = 'On';
-            upperScreen.style.backgroundColor = 'black';
-            lowerScreen.style.backgroundColor = 'black';
-        } else {
-            toggleBtn.textContent = 'Off';
-            upperScreen.style.backgroundColor = 'blue';
-            lowerScreen.style.backgroundColor = 'red';
-        }
-        isOn = !isOn;
-    });
-
-    // Handle back button press
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Backspace' || event.key === 'Escape') {
-            if (backPressedOnce) {
-                window.close(); // Close app logic; this may differ based on the environment
-            } else {
-                backPressedOnce = true;
-                backPopup.classList.remove('hidden');
-                setTimeout(() => {
-                    backPressedOnce = false;
-                    backPopup.classList.add('hidden');
-                }, 2000);
+    function checkCollision() {
+        const foodItems = document.querySelectorAll('.food');
+        foodItems.forEach(food => {
+            const foodRect = food.getBoundingClientRect();
+            const pacmanRect = pacman.getBoundingClientRect();
+            
+            if (
+                pacmanRect.left < foodRect.left + foodRect.width &&
+                pacmanRect.left + pacmanRect.width > foodRect.left &&
+                pacmanRect.top < foodRect.top + foodRect.height &&
+                pacmanRect.top + pacmanRect.height > foodRect.top
+            ) {
+                food.remove(); // Eat the food
             }
+        });
+    }
+
+    function handleKeyPress(event) {
+        switch(event.key) {
+            case 'ArrowUp':
+                movePacman(0, -pacmanSpeed);
+                break;
+            case 'ArrowDown':
+                movePacman(0, pacmanSpeed);
+                break;
+            case 'ArrowLeft':
+                movePacman(-pacmanSpeed, 0);
+                break;
+            case 'ArrowRight':
+                movePacman(pacmanSpeed, 0);
+                break;
         }
-    });
+    }
+
+    document.addEventListener('keydown', handleKeyPress);
 });
